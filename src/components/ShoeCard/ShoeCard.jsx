@@ -33,17 +33,18 @@ const ShoeCard = ({
 
   return (
     <Link href={`/shoe/${slug}`}>
-      <Wrapper>
+      <Wrapper className={variant}>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price className={variant === 'on-sale' && 'on-sale'}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {variant === 'on-sale' && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
     </Link>
@@ -54,16 +55,37 @@ const Link = styled.a`
   text-decoration: none;
   color: inherit;
   flex: 1 0 340px;
+  position: relative;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  &.on-sale:after {
+    content: 'Sale';
+    background-color: ${COLORS.primary};
+  } 
+  &.new-release:after {
+    content: 'Just Released!';
+    background-color: ${COLORS.secondary};
+  }
+  &.on-sale:after, 
+  &.new-release:after {
+    border-radius: 2px;
+    padding: 7px 9px 9px 10px;
+    position: absolute;
+    top: 12px;
+    right: -4px;
+    color: ${COLORS.white};
+    font-weight: 700;
+  }
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
 const Image = styled.img`
-    width: 100%;
+  width: 100%;
+  border-radius: 16px 16px 4px 4px;
 `;
 
 const Row = styled.div`
@@ -77,7 +99,12 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  &.on-sale {
+    text-decoration: line-through;
+    color: ${COLORS.gray[700]};
+  }
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
